@@ -41,113 +41,107 @@ Crafty.c('Zombie',
         var Hero        = Crafty("Hero");
 
 
-Hero.bind("Moved", function(oldPos) {
-   if (oldPos.x < Zombie.x)
-      Zombie.flip();
-   else
-      Zombie.unflip();
-});
-
-        this.requires('Actor, Solid,2D, Player,spr_zombie, Fourway,Collision,SpriteAnimation')
-        .stopOnSolids()
-        .onHit('ball', this.killZombie)
-        .onHit('Solid', this.change_direction)
-        .bind('EnterFrame', function () 
-        {           
-            if (Zombie.y > Hero.y)
+        Hero.bind("Moved", function(oldPos)
+        {
+            if (oldPos.x < Zombie.x)
             {
-            
-             Zombie.flip;
-              var animation_speed = 8;
-                d_Zombie_y = -1;
-        //        Zombie.reel('PlayerRunningl', 1000, [[1, 0], [1, 1], [1, 2], [1, 3]]);
-        //        Zombie.animate('PlayerRunningl', animation_speed, -1);
-                
+                stop = 0;
+                Zombie.flip();
             }
-            if (Zombie.y < Hero.y)
+            else
             {
-              var animation_speed = 8;
-                d_Zombie_y = 1;
-          //      Zombie.reel('PlayerRunningr', 1000, [[2, 1], [3, 1], [4, 1], [3, 1]]);
-        //          Zombie.animate('PlayerRunningr', animation_speed, -1);
-            }      
-            if (Zombie.x > Hero.x)
-            {
+                stop = 0;
+                Zombie.unflip();
+            }
+        });
+
+        this.requires('Actor, Solid,2D,spr_zombie, Twoway,Collision,SpriteAnimation, Gravity')
+        
+         .onHit('Bush', function ()
+         {
+         
+        
+         
+            stop=1;
             
-             Zombie.flip;
-              var animation_speed = 8;
+            if (d_Zombie_x == -1){
+            
+            
+           Zombie.x += 2;
+           
+           
+         //  console.log('left');
+           
+            }
+            
+            else if (d_Zombie_x == 1){
+            
+            
+             Zombie.x -= 2;
+        //     console.log('right');
+            }
+            
+            
+            
+            
+            
+            
+            
+         },
+            function ()
+         {
+            stop=0;
+            
+         })
+     //   .stopOnSolids()
+        .gravity("platform")
+        .onHit('ball', this.killZombie)
+        .bind('EnterFrame', function () 
+        {   
+            console.log(stop);
+        if (Zombie.x > Hero.x)
+        {
+            var animation_speed = 8;
+            if (stop != 1)
+            {
                 d_Zombie_x = -1;
-        //        Zombie.reel('PlayerRunningd', 1000, [[0, 0], [1, 0], [2, 0], [3, 0]]);
-     //             Zombie.animate('PlayerRunningd', animation_speed, -1);
+            }
+            else
+            {
+                d_Zombie_x = 0;
+            }
+            //        Zombie.reel('PlayerRunningd', 1000, [[0, 0], [1, 0], [2, 0], [3, 0]]);
+            //        Zombie.animate('PlayerRunningd', animation_speed, -1);
             }    
 
             if (Zombie.x < Hero.x)
             {
-              var animation_speed = 8;
-                d_Zombie_x = +1;
+                var animation_speed = 8;
+                if (stop!=1)
+                {
+                    d_Zombie_x = 1;
+                }
+     
+     
        //        Zombie.reel('PlayerRunningu', 1000, [[0, 0], [0, 1], [0, 2], [0, 3]]);
       //            Zombie.animate('PlayerRunningu', animation_speed, -1);
             }  
             this.x = this.x + d_Zombie_x;
-            this.y = this.y + d_Zombie_y;
+      //      this.y = this.y + d_Zombie_y;
       
         })
-        
+  
         var animation_speed = 8;
-        this.bind('NewDirection', function(data) 
-        {
-            if (data.x > 0) {
-            
-            Zombie.flip();
-            
-            console.log('up');
-            
-       //    Zombie.reel('PlayerRunningl', 1000, [[3, 0], [4, 0], [5, 0], [3, 3]]);
-       //     Zombie.animate('PlayerRunningl', animation_speed, -1);
-            }
-            
-            else if (data.x < 0) 
-            {
-        //   Zombie.reel('PlayerRunningr', 1000, [[3, 0], [4, 0], [5, 0], [3, 3]]);
-      //          Zombie.animate('PlayerRunningr', animation_speed, -1);
-           Zombie.unflip();
-          
-           console.log('up');
-          
-          
-            } 
-            
-            else if (data.y > 0)
-            {
-       //   Zombie.reel('PlayerRunningd', 1000, [[3, 0], [4, 0], [5, 0], [3, 3]]);
-       //         Zombie.animate('PlayerRunningd', animation_speed, -1);
-            Zombie.flip();
-            console.log('up');
-           
-            } 
-            
-            else if (data.y < 0) 
-            {
-        //   Zombie.reel('PlayerRunningu', 1000, [[3, 0], [4, 0], [5, 0], [3, 3]]);
-        //        Zombie.animate('PlayerRunningu', animation_speed, -1);
-           
-            console.log('up');
-            Zombie.flip();
-           
-            } 
-            
-            else {
-            this.pauseAnimation();
-            }
-        });
- 
     },
     
     change_direction: function()
         {
            Zombie = this;
-           Zombie.d_Zombie_x = -Zombie.d_Zombie_x;
-           Zombie.d_Zombie_y = -Zombie.d_Zombie_y;
+           Zombie.d_Zombie_x = 0;
+        //   Zombie.d_Zombie_y = -Zombie.d_Zombie_y;
+        this.stopMovement();
+        this.stopOnSolids();
+        console.log ('changed');
            
             return this;
           },
@@ -158,21 +152,34 @@ Hero.bind("Moved", function(oldPos) {
         Zombie.destroy();
     },
     
-    stopOnSolids: function()
-    {
-        this.onHit('Solid', this.stopMovement);
-        return this;
-    },
+ //   stopOnSolids: function()
+//    {
+    
+ //   var Zombie = this;
+   //     Zombie.onHit('Bush', this.stopMovement);
+  //      return this;
+  //  },
 
     // Stops the movement
     stopMovement: function() 
     {
-        this._speed = 0;
-        if (this._movement)
-        {
-            this.x -= this._movement.x;
-            this.y -= this._movement.y;
-        }
+      var Zombie = this;
+    stop =1;
+    
+    
+      //  Zombie.d_Zombie_x = 0;
+    
+     //   Zombie._speed = 0;
+       // console.log ('stopped');
+        console.log (stop);
+    //   Zombie.d_Zombie_x =0;
+      
+      // Zombie.x = Zombie.x - d_Zombie_x;
+          //  this.x -= this._movement.x;
+         //   this.y -= this._movement.y;
+          
+     //     return Zombie;   
+       
     },
 });
 
