@@ -37,151 +37,93 @@ Crafty.c('Zombie',
 {
     init: function() 
     {
-        var Zombie      = this;
+        var zombie      = this;
         var Hero        = Crafty("Hero");
-
-
         Hero.bind("Moved", function(oldPos)
         {
-            if (oldPos.x < Zombie.x)
+            if (oldPos.x < zombie.x)
             {
-                stop = 0;
-                Zombie.flip();
+                //stop = 0;
+                zombie.flip();
             }
             else
             {
-                stop = 0;
-                Zombie.unflip();
+                //stop = 0;
+                zombie.unflip();
             }
         });
-
+        var animation_speed = 8;
         this.requires('Actor, Solid,2D,spr_zombie, Twoway,Collision,SpriteAnimation, Gravity')
-        
-         .onHit('Bush', function ()
-         {
-         
-        
-         
-            stop=1;
-            
-            if (d_Zombie_x == -1){
-            
-            
-           Zombie.x += 2;
-           
-           
-         //  console.log('left');
-           
-            }
-            
-            else if (d_Zombie_x == 1){
-            
-            
-             Zombie.x -= 2;
-        //     console.log('right');
-            }
-            
-            
-            
-            
-            
-            
-            
-         },
-            function ()
-         {
-            stop=0;
-            
-         })
-     //   .stopOnSolids()
+        .reel('ZombieMoving',600, 0, 0, 30)
         .gravity("platform")
-        .onHit('ball', this.killZombie)
+        .animate('ZombieMoving', animation_speed, -1)
+        .onHit('ball', zombie.killZombie)
         .bind('EnterFrame', function () 
         {   
-            console.log(stop);
-        if (Zombie.x > Hero.x)
-        {
-            var animation_speed = 8;
-            if (stop != 1)
+            if (this.x > Hero.x)
             {
-                d_Zombie_x = -1;
-            }
-            else
-            {
-                d_Zombie_x = 0;
-            }
-            //        Zombie.reel('PlayerRunningd', 1000, [[0, 0], [1, 0], [2, 0], [3, 0]]);
-            //        Zombie.animate('PlayerRunningd', animation_speed, -1);
-            }    
-
-            if (Zombie.x < Hero.x)
-            {
-                var animation_speed = 8;
-                if (stop!=1)
+                if (this.stop != 1)
                 {
-                    d_Zombie_x = 1;
+                    this.d_zombie_x = -1;
                 }
-     
-     
-       //        Zombie.reel('PlayerRunningu', 1000, [[0, 0], [0, 1], [0, 2], [0, 3]]);
-      //            Zombie.animate('PlayerRunningu', animation_speed, -1);
+                else
+                {
+                    this.d_zombie_x = 0;
+                    this.pauseAnimation();
+                }
+            }    
+            if (this.x < Hero.x)
+            {
+                if (this.stop!=1)
+                {
+                    this.d_zombie_x = 1;
+                }
+                else
+                {
+                    this.d_zombie_x = 0;
+                    this.pauseAnimation();
+                }
             }  
-            this.x = this.x + d_Zombie_x;
-      //      this.y = this.y + d_Zombie_y;
-      
-        })
-  
-        var animation_speed = 8;
-    },
-    
-    change_direction: function()
+            this.x = this.x + this.d_zombie_x;
+         })
+         
+         .onHit('Bush', function ()
         {
-           Zombie = this;
-           Zombie.d_Zombie_x = 0;
-        //   Zombie.d_Zombie_y = -Zombie.d_Zombie_y;
-        this.stopMovement();
-        this.stopOnSolids();
-        console.log ('changed');
-           
-            return this;
-          },
-
-    killZombie: function() 
-    {
-        var Zombie = this;
-        Zombie.destroy();
-    },
-    
- //   stopOnSolids: function()
-//    {
-    
- //   var Zombie = this;
-   //     Zombie.onHit('Bush', this.stopMovement);
-  //      return this;
-  //  },
-
-    // Stops the movement
-    stopMovement: function() 
-    {
-      var Zombie = this;
-    stop =1;
-    
-    
-      //  Zombie.d_Zombie_x = 0;
-    
-     //   Zombie._speed = 0;
-       // console.log ('stopped');
-        console.log (stop);
-    //   Zombie.d_Zombie_x =0;
+            this.stop = 1;
+            if (this.d_zombie_x == -1)
+            {
+                this.x += 2;
+                console.log('left');
+            }
+                else if (this.d_zombie_x == 1)
+                {
+                    this.x -= 2;
+                    console.log('right');
+                }
+        },
+        function ()
+        {
+            this.stop = 0;
+            this.animate('ZombieMoving', animation_speed, -1); 
+        })
       
-      // Zombie.x = Zombie.x - d_Zombie_x;
-          //  this.x -= this._movement.x;
-         //   this.y -= this._movement.y;
-          
-     //     return Zombie;   
-       
+    },
+        killZombie: function() 
+        {
+            var zombie = this;
+            zombie.destroy();
+        },
+
+// Stops the movement
+        stopMovement: function() 
+        {
+            this.stop = 1;
+            console.log (this.stop);
     },
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // A Tree is just an Actor with a certain color
 Crafty.c('Tree', {
@@ -192,12 +134,38 @@ Crafty.c('Tree', {
 
 
 
+
+
+// A Tree is just an Actor with a certain color
+Crafty.c('b001_r', {
+  init: function() {
+    this.requires('Actor,spr_b001_r, Solid')
+  },
+});
+
+
+
+
 // A Tree is just an Actor with a certain color
 Crafty.c('b001', {
   init: function() {
     this.requires('Actor,spr_b001, Solid,platform')
   },
 });
+
+// A Tree is just an Actor with a certain color
+Crafty.c('b001_l', {
+  init: function() {
+    this.requires('Actor,spr_b001_l, Solid')
+  },
+});
+
+
+
+
+
+
+
 
 
 // A Tree is just an Actor with a certain color
@@ -222,13 +190,33 @@ Crafty.c('b004', {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // A Bush is just an Actor with a certain color
 Crafty.c('Bush', {
   init: function() {
     this.requires('Actor, spr_bush, Solid,platform')
   },
 });
-
 
  // A village is a tile on the grid that the PC must visit in order to win the game
 Crafty.c('Village',
@@ -289,74 +277,41 @@ Crafty.c('Hero',
     init: function() 
     {
         var Hero = this;
-        var Zombie = Crafty('Zombie');
-        
+
         Crafty.addEvent(Hero, Crafty.stage.elem, "mousedown", Hero.onMouseDown);
         this.requires('Fourway,Grid,2D, Player,Tween, Controls, Collision,Mouse,Keyboard,Canvas,spr_player,SpriteAnimation,Gravity')
         .attr({ h: 100, w:100 })
         .fourway(8)
-        
-        
         .bind('EnterFrame', function () 
         { 	
-        	
            Crafty.viewport.centerOn(Crafty('Hero'),200);
         })
-        
-  
-         .gravity("platform")
+        .gravity("platform")
         .stopOnSolids()
         .onHit('Village', this.visitVillage)
-       // .reel('PlayerMovingUp', 600, 0, 0, 30)
-        .reel('PlayerMovingRight', 600, 0, 0, 30)
-      //  .reel('PlayerMovingDown', 600, 0, 0, 30)
-        .reel('PlayerMovingLeft', 600, 0, 0, 30)
-        
+        .reel('PlayerMoving', 600, 0, 0, 30)
         .reel('Playerstanding', 600, 31, 0, 1)
-     
+        .animate('PlayerMoving', animation_speed, -1)
         ;
         var animation_speed = 8;
         
-        
-        /*
-        this.bind("Moved", function(oldPos) {
-   if (oldPos.x < Zombie.x)
-      Zombie.flip();
-   else
-      Zombie.unflip();
-});
-        
-     */   
-        
-    
         this.bind('NewDirection', function(data) 
         {
-        
-        
-         console.log (data.y);
-        
-            if (data.x > 0) {
-            this.animate('PlayerMovingRight', animation_speed, -1);
-            
-            Hero.unflip();
-            
-            
-            } else if (data.x < 0) {
-            this.animate('PlayerMovingLeft', animation_speed, -1);
-           
-             Hero.flip();
-            } else if (data.y > 0) {
-       //     this.animate('PlayerMovingDown', animation_speed, -1);
-           //  Hero.flip();
-            } else if (data.y < 0) {
-          //  this.animate('PlayerMovingUp', animation_speed, -1);
-           //  Hero.flip();
-            } else {
-           
-   
-            this.animate('Playerstanding', animation_speed, -1);
-          
-            this.pauseAnimation();
+
+            if (data.x > 0) 
+            {
+                Hero.animate('PlayerMoving', animation_speed, -1);
+                Hero.unflip();
+            } 
+            else if (data.x < 0) 
+            {
+                Hero.animate('PlayerMoving', animation_speed, -1);
+                Hero.flip();
+            } 
+            else
+            {
+                this.animate('Playerstanding', animation_speed, -1);
+                this.pauseAnimation();
             }
         });
      },   
@@ -384,7 +339,7 @@ Crafty.c('Hero',
         {
             villlage = data[0].obj;
             villlage.collect();
-         disks=disks-1;
+            disks=disks-1;
             init();
         }
 });
