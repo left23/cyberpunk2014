@@ -335,22 +335,15 @@ Crafty.c('b009', {
 
 
 // A Tree is just an Actor with a certain color
-Crafty.c('b009_r_u', {
+Crafty.c('b009_r', {
   init: function() {
    // this.requires('Actor,spr_b004, Solid,platform')
-   this.requires('Building,unGrid,spr_b009_r_u')
+   this.requires('Building,unGrid,spr_b009_r, Solid,platform')
  
   },
 });
 
-// A Tree is just an Actor with a certain color
-Crafty.c('b009_r_d', {
-  init: function() {
-   // this.requires('Actor,spr_b004, Solid,platform')
-   this.requires('Building,unGrid,spr_b009_r_d, Solid,platform')
- 
-  },
-});
+
 
 
 

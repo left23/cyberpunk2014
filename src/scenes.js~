@@ -134,7 +134,7 @@ Crafty.scene('Loading', function(){
 			spr_b008:  [0, 0],
 		}, 0, 2);
 
-		Crafty.sprite(78,508, 'assets/building008_r.png', {
+		Crafty.sprite(78,838, 'assets/building008_r.png', {
 			spr_b008_r:  [0, 0],
 		}, 0, 2);
 
