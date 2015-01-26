@@ -353,7 +353,14 @@ Crafty.c('b009_r_d', {
 });
 
 
-
+// A Tree is just an Actor with a certain color
+Crafty.c('eol1freak', {
+  init: function() {
+   // this.requires('Actor,spr_b004, Solid,platform')
+   this.requires('Building,unGrid,spr_eol1freak, Solid,platform')
+ 
+  },
+});
 
 
 
